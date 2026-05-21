@@ -1,11 +1,4 @@
 # 📺 SyncTube - Collaborative Real-Time Watch Party Platform
-
-[![React](https://img.shields.io/badge/React-19.0-blue?logo=react&logoColor=white)](https://react.dev/)
-[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.0-38bdf8?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Socket.IO](https://img.shields.io/badge/Socket.IO-v4.7-black?logo=socketdotio&logoColor=white)](https://socket.io/)
-[![Redis Scaled](https://img.shields.io/badge/Redis-Adapter-red?logo=redis&logoColor=white)](https://redis.io/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
 SyncTube is a production-grade, full-stack collaborative watch party platform. It enables multiple users to join virtual rooms and watch YouTube videos in perfect real-time synchronization. Powered by a robust MERN stack, Socket.IO, and a Redis event bus, SyncTube guarantees synchronized playback, instant persistent chat, typing indicators, dynamic user roles, and interactive floating emoji reactions.
 
 ---
@@ -221,5 +214,6 @@ When scaling to support **1,000+ simultaneous users** and **100+ active rooms**,
 1.  **State Partitioning**: Active session state is mapped inside MongoDB. Nodes remain stateless, querying details on-the-fly when processing API requests.
 2.  **Horizontal Scalability (Redis Adapter)**: Supplying a valid `REDIS_URL` in `.env` swaps the local socket connection adapter for a high-speed Redis message broker. Events are instantly routed across multiple server instances.
 3.  **Sticky Sessions**: Ensure load balancers (such as Nginx or AWS ALBs) are configured with sticky session cookies (`ip_hash` or cookie tracking) if utilizing Socket.IO's HTTP long-polling fallback connection layer.
-#   s y n c t u b e - w a t c h p a r t y - p l a t f o r m  
+#   s y n c t u b e - w a t c h p a r t y - p l a t f o r m 
+ 
  
