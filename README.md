@@ -139,8 +139,8 @@ npm install
 Create a `.env` file:
 
 ```env
-VITE_API_URL=http://localhost:5000/api
-VITE_SOCKET_URL=http://localhost:5000
+VITE_API_URL=https://synctube-watchparty-platform.onrender.com/api
+VITE_SOCKET_URL=https://synctube-watchparty-platform.onrender.com
 ```
 
 Start frontend:

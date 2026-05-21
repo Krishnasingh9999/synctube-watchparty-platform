@@ -4,7 +4,7 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { useAuthStore } from './useAuthStore';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://synctube-watchparty-platform.onrender.com';
 
 export const useRoomStore = create((set, get) => ({
   room: null,
