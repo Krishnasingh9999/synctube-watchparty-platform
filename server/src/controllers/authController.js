@@ -41,9 +41,12 @@ export const sendOtp = async (req, res) => {
       return res.status(500).json({ success: false, message: emailRes.error || 'Failed to send verification email' });
     }
 
+    const isTestEmail = email.endsWith('@example.com');
     return res.status(200).json({
       success: true,
-      message: 'Verification code sent to your email! Please check your inbox.',
+      message: isTestEmail
+        ? `[TEST MODE] OTP code is ${otp}. Please enter this code to verify!`
+        : 'Verification code sent to your email! Please check your inbox.',
     });
   } catch (error) {
     console.error('Send OTP error:', error.message);
@@ -262,9 +265,12 @@ export const forgotPassword = async (req, res) => {
       return res.status(500).json({ success: false, message: emailRes.error || 'Failed to send reset email' });
     }
 
+    const isTestEmail = email.endsWith('@example.com');
     return res.status(200).json({
       success: true,
-      message: 'If a matching account exists, a password reset link has been sent to your email.',
+      message: isTestEmail
+        ? `[TEST MODE] Reset Token is: ${resetToken}`
+        : 'If a matching account exists, a password reset link has been sent to your email.',
     });
   } catch (error) {
     console.error('Forgot password error:', error.message);
