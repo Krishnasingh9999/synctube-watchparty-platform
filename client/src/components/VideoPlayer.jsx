@@ -32,31 +32,68 @@ export default function VideoPlayer({ videoId, role }) {
     }, 1000);
   };
 
-  // Load YouTube IFrame API Script
-  useEffect(() => {
-    if (!window.YT) {
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  // Poll current time to detect seeking (YouTube API has no native seek listener)
+  const startPolling = (player) => {
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
 
-      window.onYouTubeIframeAPIReady = () => {
-        initPlayer();
-      };
-    } else {
-      initPlayer();
+    pollIntervalRef.current = setInterval(() => {
+      if (!player || typeof player.getCurrentTime !== 'function') return;
+
+      const currentTime = player.getCurrentTime();
+      const state = player.getPlayerState();
+
+      // Only evaluate if playing or paused (ignore unstarted/buffering states)
+      if (state === window.YT.PlayerState.PLAYING || state === window.YT.PlayerState.PAUSED) {
+        const delta = Math.abs(currentTime - lastTimeRef.current);
+
+        // A jump of > 1.8 seconds usually represents a manual seek
+        if (delta > 1.8) {
+          if (!isRemoteUpdateRef.current) {
+            if (!canControlRef.current) {
+              // Revert participant back to host's timestamp
+              setRemoteUpdateFlag();
+              player.seekTo(lastTimeRef.current, true);
+              toast.error('Playback scrubbing is restricted to room hosts/moderators.');
+            } else {
+              seekVideo(currentTime);
+            }
+          }
+        }
+      }
+      lastTimeRef.current = currentTime;
+    }, 500);
+  };
+
+  // Handle local state changes (Play / Pause clicks)
+  const handlePlayerStateChange = (event) => {
+    const player = playerRef.current;
+    const state = event.data;
+
+    // If change was driven by a remote socket sync signal, ignore to avoid feedback loop
+    if (isRemoteUpdateRef.current) {
+      return;
     }
 
-    return () => {
-      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-      if (playerRef.current) {
-        playerRef.current.destroy();
+    if (state === window.YT.PlayerState.PLAYING) {
+      if (!canControlRef.current) {
+        // Participant unauthorized attempt to play: revert state programmatically
+        setRemoteUpdateFlag();
+        player.pauseVideo();
+        toast.error('Only the Host or Moderators can play the video.');
+      } else {
+        playVideo(player.getCurrentTime());
       }
-      if (remoteUpdateTimeoutRef.current) {
-        clearTimeout(remoteUpdateTimeoutRef.current);
+    } else if (state === window.YT.PlayerState.PAUSED) {
+      if (!canControlRef.current) {
+        // Participant unauthorized attempt to pause: revert state programmatically
+        setRemoteUpdateFlag();
+        player.playVideo();
+        toast.error('Only the Host or Moderators can pause the video.');
+      } else {
+        pauseVideo(player.getCurrentTime());
       }
-    };
-  }, []);
+    }
+  };
 
   // Initialize YT Player
   const initPlayer = () => {
@@ -82,6 +119,33 @@ export default function VideoPlayer({ videoId, role }) {
       },
     });
   };
+
+  // Load YouTube IFrame API Script
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        initPlayer();
+      };
+    } else {
+      initPlayer();
+    }
+
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+      if (playerRef.current) {
+        playerRef.current.destroy();
+      }
+      if (remoteUpdateTimeoutRef.current) {
+        clearTimeout(remoteUpdateTimeoutRef.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Handle videoId prop updates
   useEffect(() => {
@@ -129,69 +193,6 @@ export default function VideoPlayer({ videoId, role }) {
         break;
     }
   }, [videoAction, isPlayerReady]);
-
-  // Handle local state changes (Play / Pause clicks)
-  const handlePlayerStateChange = (event) => {
-    const player = playerRef.current;
-    const state = event.data;
-
-    // If change was driven by a remote socket sync signal, ignore to avoid feedback loop
-    if (isRemoteUpdateRef.current) {
-      return;
-    }
-
-    if (state === window.YT.PlayerState.PLAYING) {
-      if (!canControlRef.current) {
-        // Participant unauthorized attempt to play: revert state programmatically
-        setRemoteUpdateFlag();
-        player.pauseVideo();
-        toast.error('Only the Host or Moderators can play the video.');
-      } else {
-        playVideo(player.getCurrentTime());
-      }
-    } else if (state === window.YT.PlayerState.PAUSED) {
-      if (!canControlRef.current) {
-        // Participant unauthorized attempt to pause: revert state programmatically
-        setRemoteUpdateFlag();
-        player.playVideo();
-        toast.error('Only the Host or Moderators can pause the video.');
-      } else {
-        pauseVideo(player.getCurrentTime());
-      }
-    }
-  };
-
-  // Poll current time to detect seeking (YouTube API has no native seek listener)
-  const startPolling = (player) => {
-    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-
-    pollIntervalRef.current = setInterval(() => {
-      if (!player || typeof player.getCurrentTime !== 'function') return;
-
-      const currentTime = player.getCurrentTime();
-      const state = player.getPlayerState();
-
-      // Only evaluate if playing or paused (ignore unstarted/buffering states)
-      if (state === window.YT.PlayerState.PLAYING || state === window.YT.PlayerState.PAUSED) {
-        const delta = Math.abs(currentTime - lastTimeRef.current);
-
-        // A jump of > 1.8 seconds usually represents a manual seek
-        if (delta > 1.8) {
-          if (!isRemoteUpdateRef.current) {
-            if (!canControlRef.current) {
-              // Revert participant back to host's timestamp
-              setRemoteUpdateFlag();
-              player.seekTo(lastTimeRef.current, true);
-              toast.error('Playback scrubbing is restricted to room hosts/moderators.');
-            } else {
-              seekVideo(currentTime);
-            }
-          }
-        }
-      }
-      lastTimeRef.current = currentTime;
-    }, 500);
-  };
 
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black border border-white/5 shadow-2xl">

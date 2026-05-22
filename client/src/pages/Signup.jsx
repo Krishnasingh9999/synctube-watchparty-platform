@@ -8,7 +8,7 @@ export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [avatarSeed, setAvatarSeed] = useState('');
+  const [avatarSeed, setAvatarSeed] = useState(() => Math.random().toString(36).substring(7));
   const [formError, setFormError] = useState('');
 
   // OTP and Verification States
@@ -22,9 +22,8 @@ export default function Signup() {
   const { sendOtp, verifyOtp, register, loading, error, clearError } = useAuthStore();
   const navigate = useNavigate();
 
-  // Set initial random seed and clear global error on mount
+  // Clear global error on mount
   useEffect(() => {
-    setAvatarSeed(Math.random().toString(36).substring(7));
     clearError();
   }, [clearError]);
 

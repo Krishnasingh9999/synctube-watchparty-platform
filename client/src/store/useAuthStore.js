@@ -86,8 +86,8 @@ export const useAuthStore = create((set) => ({
         isAuthenticated: false,
         loading: false,
       });
-      return { success: true };
     }
+    return { success: true };
   },
 
   // Verify cookie session on startup
@@ -100,7 +100,7 @@ export const useAuthStore = create((set) => ({
         isAuthenticated: true,
         isCheckingAuth: false,
       });
-    } catch (error) {
+    } catch {
       localStorage.removeItem('token');
       // Clean auth session state if verification fails
       set({

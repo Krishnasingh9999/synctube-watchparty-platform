@@ -8,7 +8,7 @@ export default function ProtectedRoute() {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   if (isCheckingAuth) {
     return (

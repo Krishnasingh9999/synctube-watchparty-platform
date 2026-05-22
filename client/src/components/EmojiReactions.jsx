@@ -6,8 +6,9 @@ export default function EmojiReactions() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
       {reactions.map((reaction) => {
-        // Distribute emojis horizontally across the right third of the screen to avoid blocking video content
-        const randomXOffset = 60 + Math.random() * 30; // e.g. 60% to 90% from left
+        // Distribute emojis horizontally across the right third of the screen using a deterministic hash of the ID to keep render pure
+        const hash = reaction.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const randomXOffset = 60 + (hash % 31); // 60% to 90% from left
         
         return (
           <span

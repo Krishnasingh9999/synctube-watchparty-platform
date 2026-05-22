@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useRoomStore } from '../store/useRoomStore';
-import { useAuthStore } from '../store/useAuthStore';
 import { extractYoutubeId } from '../utils/youtube';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import { Link, Play, Clipboard, LogOut, Trash2 } from 'lucide-react';
+import { Link, Clipboard, LogOut, Trash2 } from 'lucide-react';
 
 export default function ControlsTab() {
   const [videoUrl, setVideoUrl] = useState('');
   const { room, role, changeVideo, leaveRoom } = useRoomStore();
-  const { user } = useAuthStore();
 
   const isHost = role === 'HOST';
   const isParticipant = role === 'PARTICIPANT';
@@ -48,6 +46,7 @@ export default function ControlsTab() {
   // Explicitly Leave Room
   const handleLeaveRoom = () => {
     if (confirm('Are you sure you want to leave this watch party?')) {
+      leaveRoom();
       window.location.href = '/dashboard';
     }
   };

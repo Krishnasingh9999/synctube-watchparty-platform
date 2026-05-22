@@ -12,7 +12,10 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
  * @param {string} verificationToken - Verification token
  */
 export const sendVerificationEmail = async (email, name, verificationToken) => {
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+  const clientUrl = process.env.CLIENT_URL || 
+    (process.env.NODE_ENV === 'production' 
+      ? 'https://synctube-watchparty-platform-1.onrender.com' 
+      : 'http://localhost:5173');
   const verificationLink = `${clientUrl}/verify-email?token=${verificationToken}`;
 
   if (process.env.NODE_ENV === 'test' || (email && email.endsWith('@example.com'))) {
@@ -319,7 +322,10 @@ export const sendOtpEmail = async (email, name, otp) => {
  * @param {string} resetToken - Secure reset token
  */
 export const sendPasswordResetEmail = async (email, name, resetToken) => {
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+  const clientUrl = process.env.CLIENT_URL || 
+    (process.env.NODE_ENV === 'production' 
+      ? 'https://synctube-watchparty-platform-1.onrender.com' 
+      : 'http://localhost:5173');
   const resetLink = `${clientUrl}/reset-password/${resetToken}`;
 
   if (process.env.NODE_ENV === 'test' || (email && email.endsWith('@example.com'))) {

@@ -135,7 +135,7 @@ export const useRoomStore = create((set, get) => ({
     });
 
     // Suggested socket event listeners
-    socketInstance.on('user_joined', ({ username, userId: joinedUserId, role: joinedRole, participants }) => {
+    socketInstance.on('user_joined', ({ username, userId: joinedUserId, participants }) => {
       set((state) => ({
         room: state.room ? { ...state.room, participants } : null,
       }));
@@ -146,7 +146,7 @@ export const useRoomStore = create((set, get) => ({
       }
     });
 
-    socketInstance.on('user_left', ({ username, userId: leftUserId, participants }) => {
+    socketInstance.on('user_left', ({ participants }) => {
       set((state) => ({
         room: state.room ? { ...state.room, participants } : null,
       }));
@@ -166,7 +166,7 @@ export const useRoomStore = create((set, get) => ({
       }
     });
 
-    socketInstance.on('participant_removed', ({ userId: kickedUserId, participants }) => {
+    socketInstance.on('participant_removed', ({ participants }) => {
       set((state) => ({
         room: state.room ? { ...state.room, participants } : null,
       }));

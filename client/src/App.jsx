@@ -23,7 +23,7 @@ export default function App() {
   // Run session check on initial application mount
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   return (
     <BrowserRouter>
@@ -53,8 +53,10 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Route>
+
+        {/* STANDALONE ROUTING LAYER (Accessible by anyone) */}
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/* PROTECTED ROUTING LAYER */}
         <Route element={<ProtectedRoute />}>

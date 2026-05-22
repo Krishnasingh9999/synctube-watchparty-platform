@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRoomStore } from '../store/useRoomStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { Crown, Shield, User, UserMinus, ShieldAlert, Award, MoreVertical } from 'lucide-react';
+import { Crown, Shield, User, UserMinus, MoreVertical } from 'lucide-react';
 
 export default function ParticipantsTab() {
   const { room, role: currentUserRole, assignRole, kickUser, transferHost } = useRoomStore();

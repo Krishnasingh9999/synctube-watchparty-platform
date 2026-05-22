@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Tv, Mail, ArrowLeft, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -10,7 +10,6 @@ export default function ForgotPassword() {
   const [formError, setFormError] = useState('');
 
   const { forgotPassword, loading, error, clearError } = useAuthStore();
-  const navigate = useNavigate();
 
   useEffect(() => {
     clearError();

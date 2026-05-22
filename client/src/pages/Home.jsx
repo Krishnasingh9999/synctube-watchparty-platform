@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import { Tv, Users, MessageSquare, ShieldCheck, Zap } from 'lucide-react';
+import { Tv, MessageSquare, ShieldCheck } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
 export default function Home() {

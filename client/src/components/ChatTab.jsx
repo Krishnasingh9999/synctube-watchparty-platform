@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRoomStore } from '../store/useRoomStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { Send, Smile } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 const REACTION_EMOJIS = ['❤️', '😂', '😮', '😢', '🔥', '👍', '🎉', '🍿'];
 

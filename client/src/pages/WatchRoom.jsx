@@ -7,7 +7,7 @@ import ChatTab from '../components/ChatTab';
 import ParticipantsTab from '../components/ParticipantsTab';
 import ControlsTab from '../components/ControlsTab';
 import EmojiReactions from '../components/EmojiReactions';
-import { MessageSquare, Users, Settings, Copy, Share2, Crown, ShieldCheck, User } from 'lucide-react';
+import { MessageSquare, Users, Settings, Share2, Crown, ShieldCheck, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function WatchRoom() {
@@ -63,6 +63,7 @@ export default function WatchRoom() {
         leaveRoom(user.id || user._id);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId, user?.id, user?._id]);
 
   // Copy shareable invitation URL

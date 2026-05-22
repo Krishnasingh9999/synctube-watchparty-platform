@@ -1,7 +1,7 @@
 import { useAuthStore } from '../store/useAuthStore';
 import { useRoomStore } from '../store/useRoomStore';
 import { useNavigate, Link } from 'react-router-dom';
-import { Tv, LogOut, Radio, User, Compass } from 'lucide-react';
+import { Tv, LogOut, Compass } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Navbar() {
