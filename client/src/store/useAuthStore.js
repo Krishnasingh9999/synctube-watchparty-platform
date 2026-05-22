@@ -12,8 +12,12 @@ export const useAuthStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.post('/auth/register', { name, email, password, avatar });
+      const { token, user } = response.data;
+      if (token) {
+        localStorage.setItem('token', token);
+      }
       set({
-        user: response.data.user,
+        user,
         isAuthenticated: true,
         loading: false,
       });
@@ -30,8 +34,12 @@ export const useAuthStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await api.post('/auth/login', { email, password });
+      const { token, user } = response.data;
+      if (token) {
+        localStorage.setItem('token', token);
+      }
       set({
-        user: response.data.user,
+        user,
         isAuthenticated: true,
         loading: false,
       });
@@ -48,16 +56,16 @@ export const useAuthStore = create((set) => ({
     set({ loading: true });
     try {
       await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error.message);
+    } finally {
+      localStorage.removeItem('token');
       set({
         user: null,
         isAuthenticated: false,
         loading: false,
       });
       return { success: true };
-    } catch (error) {
-      const message = error.response?.data?.message || 'Logout failed';
-      set({ error: message, loading: false });
-      return { success: false, message };
     }
   },
 
@@ -72,6 +80,7 @@ export const useAuthStore = create((set) => ({
         loading: false,
       });
     } catch (error) {
+      localStorage.removeItem('token');
       // Clean auth session state if verification fails
       set({
         user: null,
