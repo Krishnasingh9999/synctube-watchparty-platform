@@ -135,16 +135,20 @@ export const sendVerificationEmail = async (email, name, verificationToken) => {
   `;
 
   try {
-    const data = await resend.emails.send({
+    const response = await resend.emails.send({
       from: `SyncTube <${senderEmail}>`,
       to: email,
       subject: 'Verify your SyncTube Account',
       html: htmlContent,
     });
-    console.log(`Verification email sent successfully to ${email}. ID: ${data.id}`);
-    return { success: true, id: data.id };
+    if (response.error) {
+      console.error('Error sending verification email via Resend API:', response.error.message);
+      return { success: false, error: response.error.message };
+    }
+    console.log(`Verification email sent successfully to ${email}. ID: ${response.data?.id}`);
+    return { success: true, id: response.data?.id };
   } catch (error) {
-    console.error('Error sending verification email via Resend:', error.message);
+    console.error('Error sending verification email via Resend SDK:', error.message);
     return { success: false, error: error.message };
   }
 };
@@ -277,16 +281,20 @@ export const sendOtpEmail = async (email, name, otp) => {
   `;
 
   try {
-    const data = await resend.emails.send({
+    const response = await resend.emails.send({
       from: `SyncTube <${senderEmail}>`,
       to: email,
       subject: 'Your SyncTube Verification Code',
       html: htmlContent,
     });
-    console.log(`OTP verification email sent successfully to ${email}. ID: ${data.id}`);
-    return { success: true, id: data.id };
+    if (response.error) {
+      console.error('Error sending OTP verification email via Resend API:', response.error.message);
+      return { success: false, error: response.error.message };
+    }
+    console.log(`OTP verification email sent successfully to ${email}. ID: ${response.data?.id}`);
+    return { success: true, id: response.data?.id };
   } catch (error) {
-    console.error('Error sending OTP verification email via Resend:', error.message);
+    console.error('Error sending OTP verification email via Resend SDK:', error.message);
     return { success: false, error: error.message };
   }
 };
@@ -426,16 +434,20 @@ export const sendPasswordResetEmail = async (email, name, resetToken) => {
   `;
 
   try {
-    const data = await resend.emails.send({
+    const response = await resend.emails.send({
       from: `SyncTube <${senderEmail}>`,
       to: email,
       subject: 'Reset your SyncTube Password',
       html: htmlContent,
     });
-    console.log(`Password reset email sent successfully to ${email}. ID: ${data.id}`);
-    return { success: true, id: data.id };
+    if (response.error) {
+      console.error('Error sending password reset email via Resend API:', response.error.message);
+      return { success: false, error: response.error.message };
+    }
+    console.log(`Password reset email sent successfully to ${email}. ID: ${response.data?.id}`);
+    return { success: true, id: response.data?.id };
   } catch (error) {
-    console.error('Error sending password reset email via Resend:', error.message);
+    console.error('Error sending password reset email via Resend SDK:', error.message);
     return { success: false, error: error.message };
   }
 };

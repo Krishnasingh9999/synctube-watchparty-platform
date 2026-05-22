@@ -38,7 +38,7 @@ export const sendOtp = async (req, res) => {
     // Send the OTP email
     const emailRes = await sendOtpEmail(email, name, otp);
     if (!emailRes.success) {
-      return res.status(500).json({ success: false, message: 'Failed to send verification email' });
+      return res.status(500).json({ success: false, message: emailRes.error || 'Failed to send verification email' });
     }
 
     return res.status(200).json({
@@ -259,7 +259,7 @@ export const forgotPassword = async (req, res) => {
     // Send the password reset email
     const emailRes = await sendPasswordResetEmail(user.email, user.name, resetToken);
     if (!emailRes.success) {
-      return res.status(500).json({ success: false, message: 'Failed to send reset email' });
+      return res.status(500).json({ success: false, message: emailRes.error || 'Failed to send reset email' });
     }
 
     return res.status(200).json({
