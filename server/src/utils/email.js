@@ -1,9 +1,9 @@
-import { Resend } from 'resend';
+import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize SendGrid client
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
  * Sends a premium verification email to the user
@@ -15,7 +15,12 @@ export const sendVerificationEmail = async (email, name, verificationToken) => {
   const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
   const verificationLink = `${clientUrl}/verify-email?token=${verificationToken}`;
 
-  const senderEmail = process.env.RESEND_SENDER_EMAIL || 'onboarding@resend.dev';
+  if (process.env.NODE_ENV === 'test' || (email && email.endsWith('@example.com'))) {
+    console.log(`[TEST MODE] Bypassing SendGrid email. Verification link for ${email} is: ${verificationLink}`);
+    return { success: true, id: 'test-verification-email-id', link: verificationLink };
+  }
+
+  const senderEmail = process.env.SENDGRID_SENDER_EMAIL;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -135,20 +140,24 @@ export const sendVerificationEmail = async (email, name, verificationToken) => {
   `;
 
   try {
-    const response = await resend.emails.send({
-      from: `SyncTube <${senderEmail}>`,
+    const msg = {
+      from: {
+        name: 'Synctube',
+        email: senderEmail,
+      },
       to: email,
       subject: 'Verify your SyncTube Account',
       html: htmlContent,
-    });
-    if (response.error) {
-      console.error('Error sending verification email via Resend API:', response.error.message);
-      return { success: false, error: response.error.message };
-    }
-    console.log(`Verification email sent successfully to ${email}. ID: ${response.data?.id}`);
-    return { success: true, id: response.data?.id };
+    };
+    const [response] = await sgMail.send(msg);
+    const msgId = response?.headers?.['x-message-id'] || 'sg-success';
+    console.log(`Verification email sent successfully to ${email}. ID: ${msgId}`);
+    return { success: true, id: msgId };
   } catch (error) {
-    console.error('Error sending verification email via Resend SDK:', error.message);
+    console.error('Error sending verification email via SendGrid API:', error.message);
+    if (error.response && error.response.body) {
+      console.error('SendGrid API Error Details:', JSON.stringify(error.response.body));
+    }
     return { success: false, error: error.message };
   }
 };
@@ -161,11 +170,11 @@ export const sendVerificationEmail = async (email, name, verificationToken) => {
  */
 export const sendOtpEmail = async (email, name, otp) => {
   if (process.env.NODE_ENV === 'test' || (email && email.endsWith('@example.com'))) {
-    console.log(`[TEST MODE] Bypassing Resend email. OTP Code for ${email} is: ${otp}`);
+    console.log(`[TEST MODE] Bypassing SendGrid email. OTP Code for ${email} is: ${otp}`);
     return { success: true, id: 'test-email-id' };
   }
 
-  const senderEmail = process.env.RESEND_SENDER_EMAIL || 'onboarding@resend.dev';
+  const senderEmail = process.env.SENDGRID_SENDER_EMAIL || 'krishna18063singh@gmail.com';
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -281,20 +290,24 @@ export const sendOtpEmail = async (email, name, otp) => {
   `;
 
   try {
-    const response = await resend.emails.send({
-      from: `SyncTube <${senderEmail}>`,
+    const msg = {
+      from: {
+        name: 'Synctube',
+        email: senderEmail,
+      },
       to: email,
       subject: 'Your SyncTube Verification Code',
       html: htmlContent,
-    });
-    if (response.error) {
-      console.error('Error sending OTP verification email via Resend API:', response.error.message);
-      return { success: false, error: response.error.message };
-    }
-    console.log(`OTP verification email sent successfully to ${email}. ID: ${response.data?.id}`);
-    return { success: true, id: response.data?.id };
+    };
+    const [response] = await sgMail.send(msg);
+    const msgId = response?.headers?.['x-message-id'] || 'sg-success';
+    console.log(`OTP verification email sent successfully to ${email}. ID: ${msgId}`);
+    return { success: true, id: msgId };
   } catch (error) {
-    console.error('Error sending OTP verification email via Resend SDK:', error.message);
+    console.error('Error sending OTP verification email via SendGrid API:', error.message);
+    if (error.response && error.response.body) {
+      console.error('SendGrid API Error Details:', JSON.stringify(error.response.body));
+    }
     return { success: false, error: error.message };
   }
 };
@@ -310,11 +323,11 @@ export const sendPasswordResetEmail = async (email, name, resetToken) => {
   const resetLink = `${clientUrl}/reset-password/${resetToken}`;
 
   if (process.env.NODE_ENV === 'test' || (email && email.endsWith('@example.com'))) {
-    console.log(`[TEST MODE] Bypassing Resend email. Password reset link for ${email} is: ${resetLink}`);
+    console.log(`[TEST MODE] Bypassing SendGrid email. Password reset link for ${email} is: ${resetLink}`);
     return { success: true, id: 'test-reset-email-id', link: resetLink };
   }
 
-  const senderEmail = process.env.RESEND_SENDER_EMAIL || 'onboarding@resend.dev';
+  const senderEmail = process.env.SENDGRID_SENDER_EMAIL || 'krishna18063singh@gmail.com';
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -434,20 +447,24 @@ export const sendPasswordResetEmail = async (email, name, resetToken) => {
   `;
 
   try {
-    const response = await resend.emails.send({
-      from: `SyncTube <${senderEmail}>`,
+    const msg = {
+      from: {
+        name: 'Synctube',
+        email: senderEmail,
+      },
       to: email,
       subject: 'Reset your SyncTube Password',
       html: htmlContent,
-    });
-    if (response.error) {
-      console.error('Error sending password reset email via Resend API:', response.error.message);
-      return { success: false, error: response.error.message };
-    }
-    console.log(`Password reset email sent successfully to ${email}. ID: ${response.data?.id}`);
-    return { success: true, id: response.data?.id };
+    };
+    const [response] = await sgMail.send(msg);
+    const msgId = response?.headers?.['x-message-id'] || 'sg-success';
+    console.log(`Password reset email sent successfully to ${email}. ID: ${msgId}`);
+    return { success: true, id: msgId };
   } catch (error) {
-    console.error('Error sending password reset email via Resend SDK:', error.message);
+    console.error('Error sending password reset email via SendGrid API:', error.message);
+    if (error.response && error.response.body) {
+      console.error('SendGrid API Error Details:', JSON.stringify(error.response.body));
+    }
     return { success: false, error: error.message };
   }
 };
