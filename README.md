@@ -119,6 +119,9 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 CLIENT_URL=http://localhost:5173
 REDIS_URL=your_redis_connection_string
+SENDGRID_API_KEY=your_sendgrid_api_key
+SENDGRID_SENDER_EMAIL=your_sendgrid_sneder_email
+NODE_ENV=production
 ```
 
 Start backend server:

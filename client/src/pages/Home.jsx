@@ -17,6 +17,7 @@ export default function Home() {
         <div className="absolute top-2/3 left-1/4 w-[250px] h-[250px] bg-red-850/5 rounded-full blur-[80px] pointer-events-none z-0" />
 
         <div className="max-w-4xl mx-auto space-y-6 relative z-10">
+
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
             Watch YouTube Together
             <span className="block mt-2 bg-gradient-to-r from-red-500 via-red-600 to-amber-500 bg-clip-text text-transparent">
