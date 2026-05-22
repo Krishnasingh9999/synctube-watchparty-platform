@@ -4,13 +4,13 @@ import { useAuthStore } from '../store/useAuthStore';
 import Navbar from '../components/Navbar';
 
 export default function ProtectedRoute() {
-  const { isAuthenticated, loading, checkAuth } = useAuthStore();
+  const { isAuthenticated, isCheckingAuth, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, []);
 
-  if (loading) {
+  if (isCheckingAuth) {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center bg-zinc-950 text-zinc-400">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-800 border-t-red-600 mb-3" />

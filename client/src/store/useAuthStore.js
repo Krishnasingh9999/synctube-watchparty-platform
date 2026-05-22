@@ -4,7 +4,8 @@ import api from '../api/axios';
 export const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
-  loading: true,
+  isCheckingAuth: true,
+  loading: false,
   error: null,
 
   // Send OTP verification code to user's email
@@ -91,13 +92,13 @@ export const useAuthStore = create((set) => ({
 
   // Verify cookie session on startup
   checkAuth: async () => {
-    set({ loading: true, error: null });
+    set({ isCheckingAuth: true, error: null });
     try {
       const response = await api.get('/auth/me');
       set({
         user: response.data.user,
         isAuthenticated: true,
-        loading: false,
+        isCheckingAuth: false,
       });
     } catch (error) {
       localStorage.removeItem('token');
@@ -105,7 +106,7 @@ export const useAuthStore = create((set) => ({
       set({
         user: null,
         isAuthenticated: false,
-        loading: false,
+        isCheckingAuth: false,
       });
     }
   },

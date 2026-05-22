@@ -22,10 +22,11 @@ export default function Signup() {
   const { sendOtp, verifyOtp, register, loading, error, clearError } = useAuthStore();
   const navigate = useNavigate();
 
-  // Set initial random seed on mount
+  // Set initial random seed and clear global error on mount
   useEffect(() => {
     setAvatarSeed(Math.random().toString(36).substring(7));
-  }, []);
+    clearError();
+  }, [clearError]);
 
   const handleRandomizeAvatar = () => {
     setAvatarSeed(Math.random().toString(36).substring(7));

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Tv, Lock, ArrowLeft, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
@@ -13,6 +13,10 @@ export default function ResetPassword() {
   const { resetPassword, loading, error, clearError } = useAuthStore();
   const { token } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
