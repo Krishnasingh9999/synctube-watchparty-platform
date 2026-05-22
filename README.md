@@ -20,6 +20,7 @@ SyncTube is a full-stack real-time collaborative watch party platform where user
 ## Tech Stack
 
 ### Frontend
+
 - React.js
 - Vite
 - Tailwind CSS
@@ -28,6 +29,7 @@ SyncTube is a full-stack real-time collaborative watch party platform where user
 - Socket.IO Client
 
 ### Backend
+
 - Node.js
 - Express.js
 - MongoDB
@@ -170,24 +172,24 @@ http://localhost:5000
 ## Live Deployment URL
 
 Frontend:  
-**https://your-live-frontend-url.com**
+https://synctube-watchparty-platform-1.onrender.com/
 
 Backend API:  
-**https://your-live-backend-url.com**
-
-
+https://synctube-watchparty-platform.onrender.com/
 
 ---
 
 ## Core Functionality
 
 ### Authentication
+
 - User registration
 - User login
 - Logout
 - Session validation
 
 ### Watch Party Features
+
 - Create room
 - Join room
 - Real-time synchronized playback
@@ -196,6 +198,7 @@ Backend API:
 - Participant management
 
 ### Interactive Features
+
 - Live messaging
 - Typing indicators
 - Emoji reactions

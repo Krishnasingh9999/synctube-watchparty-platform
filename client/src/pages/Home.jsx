@@ -17,9 +17,6 @@ export default function Home() {
         <div className="absolute top-2/3 left-1/4 w-[250px] h-[250px] bg-red-850/5 rounded-full blur-[80px] pointer-events-none z-0" />
 
         <div className="max-w-4xl mx-auto space-y-6 relative z-10">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-[11px] font-semibold text-red-500 uppercase tracking-widest active-glow">
-            <Zap size={10} className="fill-red-500" /> Socket.IO Synchronized
-          </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
             Watch YouTube Together
