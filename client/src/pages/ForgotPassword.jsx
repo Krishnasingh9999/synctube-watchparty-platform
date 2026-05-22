@@ -1,31 +1,40 @@
 import { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
-import { Tv, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
+import { Tv, Mail, ArrowLeft, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function Login() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [formError, setFormError] = useState('');
-  
-  const { login, loading, error, clearError } = useAuthStore();
+
+  const { forgotPassword, loading, error, clearError } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
+    setSuccessMessage('');
     clearError();
 
-    if (!email || !password) {
-      setFormError('Please fill in all fields');
+    if (!email) {
+      setFormError('Please enter your email address');
       return;
     }
 
-    const res = await login(email, password);
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      setFormError('Please enter a valid email address');
+      return;
+    }
+
+    const res = await forgotPassword(email);
     if (res.success) {
-      toast.success('Welcome back to SyncTube!');
-      navigate('/dashboard');
+      setSuccessMessage(res.message || 'Reset link sent! Please check your email.');
+      toast.success('Password reset link sent successfully!');
+    } else {
+      toast.error(res.message || 'Failed to send reset link');
     }
   };
 
@@ -45,12 +54,20 @@ export default function Login() {
             </div>
             <span className="font-black text-base text-white tracking-tight">SyncTube</span>
           </Link>
-          <h2 className="text-xl font-bold tracking-tight text-zinc-200 mt-2">Sign in to your account</h2>
-          <p className="text-xs text-zinc-500 font-light">Join the live watch room with your friends</p>
+          <h2 className="text-xl font-bold tracking-tight text-zinc-200 mt-2">Forgot Password</h2>
+          <p className="text-xs text-zinc-500 font-light">Enter your email to receive a password reset link</p>
         </div>
 
-        {/* Errors */}
-        {(formError || error) && (
+        {/* Success Alert */}
+        {successMessage && (
+          <div className="flex items-center gap-2 rounded-lg bg-emerald-950/20 border border-emerald-900/30 p-3 text-xs text-emerald-500 font-semibold">
+            <CheckCircle size={14} className="flex-shrink-0" />
+            <p>{successMessage}</p>
+          </div>
+        )}
+
+        {/* Error Alert */}
+        {(formError || error) && !successMessage && (
           <div className="flex items-center gap-2 rounded-lg bg-red-950/20 border border-red-900/30 p-3 text-xs text-red-500 font-semibold">
             <AlertCircle size={14} className="flex-shrink-0" />
             <p>{formError || error}</p>
@@ -71,28 +88,8 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="w-full rounded-lg bg-zinc-900 border border-zinc-800/80 pl-11 pr-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-red-600/50"
+                disabled={loading}
               />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
-              Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" size={15} />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full rounded-lg bg-zinc-900 border border-zinc-800/80 pl-11 pr-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-red-600/50"
-              />
-            </div>
-            <div className="flex justify-end">
-              <Link to="/forgot-password" className="text-[11px] text-zinc-500 hover:text-red-500 font-semibold transition-colors">
-                Forgot password?
-              </Link>
             </div>
           </div>
 
@@ -106,16 +103,15 @@ export default function Login() {
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
             ) : (
               <>
-                Continue <ArrowRight size={15} />
+                Send Reset Link <ArrowRight size={15} />
               </>
             )}
           </button>
         </form>
 
         <div className="text-center text-xs text-zinc-500 font-medium">
-          New to SyncTube?{' '}
-          <Link to="/signup" className="text-red-500 hover:underline hover:text-red-400 font-semibold transition-colors">
-            Create an account
+          <Link to="/login" className="inline-flex items-center gap-1 text-zinc-400 hover:text-white transition-colors font-semibold">
+            <ArrowLeft size={13} /> Back to Sign In
           </Link>
         </div>
       </div>

@@ -7,11 +7,39 @@ export const useAuthStore = create((set) => ({
   loading: true,
   error: null,
 
-  // Register User (Redirects to Login, does not auto-login)
-  register: async (name, email, password, avatar) => {
+  // Send OTP verification code to user's email
+  sendOtp: async (email, name) => {
     set({ loading: true, error: null });
     try {
-      await api.post('/auth/register', { name, email, password, avatar });
+      const response = await api.post('/auth/send-otp', { email, name });
+      set({ loading: false });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to send verification code';
+      set({ error: message, loading: false });
+      return { success: false, message };
+    }
+  },
+
+  // Verify OTP verification code
+  verifyOtp: async (email, otp) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await api.post('/auth/verify-otp', { email, otp });
+      set({ loading: false });
+      return { success: true, emailToken: response.data.emailToken, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Verification failed';
+      set({ error: message, loading: false });
+      return { success: false, message };
+    }
+  },
+
+  // Register User (Redirects to Login, does not auto-login)
+  register: async (name, email, password, avatar, emailToken) => {
+    set({ loading: true, error: null });
+    try {
+      await api.post('/auth/register', { name, email, password, avatar, emailToken });
       set({ loading: false });
       return { success: true };
     } catch (error) {
@@ -79,6 +107,34 @@ export const useAuthStore = create((set) => ({
         isAuthenticated: false,
         loading: false,
       });
+    }
+  },
+
+  // Request password reset email
+  forgotPassword: async (email) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await api.post('/auth/forgot-password', { email });
+      set({ loading: false });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to send password reset request';
+      set({ error: message, loading: false });
+      return { success: false, message };
+    }
+  },
+
+  // Reset password
+  resetPassword: async (token, password) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await api.post(`/auth/reset-password/${token}`, { password });
+      set({ loading: false });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to reset password';
+      set({ error: message, loading: false });
+      return { success: false, message };
     }
   },
 
