@@ -14,6 +14,11 @@ export const register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
     }
 
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ success: false, message: 'Password must be alphanumeric (contain both letters and numbers)' });
+    }
+
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ success: false, message: 'Invalid email format' });
@@ -36,12 +41,11 @@ export const register = async (req, res) => {
 
     await user.save();
 
-    // Set cookie
-    const token = generateTokenAndSetCookie(res, user._id);
-
+    // We do not set a cookie or return a token upon registration.
+    // The user will be redirected to log in explicitly.
     return res.status(201).json({
       success: true,
-      token,
+      message: 'User registered successfully. Please log in.',
       user: {
         id: user._id,
         name: user.name,

@@ -44,11 +44,17 @@ export default function Signup() {
       return;
     }
 
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)/;
+    if (!passwordRegex.test(password)) {
+      setFormError('Password must contain both letters and numbers');
+      return;
+    }
+
     const avatar = getAvatarUrl();
     const res = await register(name, email, password, avatar);
     if (res.success) {
-      toast.success('Account created! Welcome to SyncTube.');
-      navigate('/dashboard');
+      toast.success('Account created! Please sign in.');
+      navigate('/login');
     }
   };
 
