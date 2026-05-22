@@ -37,7 +37,11 @@ export default function Signup() {
     return `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(seed)}`;
   };
 
-  const handleSendOtp = async () => {
+  const handleSendOtp = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!email) {
       toast.error('Please enter an email address first');
       return;
@@ -60,7 +64,11 @@ export default function Signup() {
     }
   };
 
-  const handleVerifyOtp = async () => {
+  const handleVerifyOtp = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (otp.length !== 6) {
       toast.error('Verification code must be exactly 6 digits');
       return;
@@ -207,7 +215,7 @@ export default function Signup() {
               {!emailVerified && (
                 <button
                   type="button"
-                  onClick={handleSendOtp}
+                  onClick={(e) => handleSendOtp(e)}
                   disabled={sendingOtp || !email}
                   className="px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:hover:bg-red-600 text-xs font-bold text-white transition-all cursor-pointer flex-shrink-0"
                 >
@@ -234,7 +242,7 @@ export default function Signup() {
                 />
                 <button
                   type="button"
-                  onClick={handleVerifyOtp}
+                  onClick={(e) => handleVerifyOtp(e)}
                   disabled={verifyingOtp || otp.length !== 6}
                   className="px-4 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 disabled:opacity-45 disabled:hover:bg-green-600 text-xs font-bold text-white transition-colors cursor-pointer"
                 >
@@ -245,7 +253,7 @@ export default function Signup() {
                 <span>Code expires in 10 minutes</span>
                 <button
                   type="button"
-                  onClick={handleSendOtp}
+                  onClick={(e) => handleSendOtp(e)}
                   className="text-red-500 hover:underline cursor-pointer font-semibold"
                 >
                   Resend Code

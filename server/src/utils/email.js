@@ -401,17 +401,17 @@ export const sendPasswordResetEmail = async (email, name, resetToken) => {
           <h1>SyncTube</h1>
         </div>
         <div class="content">
-          <div class="greeting">Hello, \${name}!</div>
+          <div class="greeting">Hello, ${name}!</div>
           <div class="text">
             We received a request to reset your password for your SyncTube account. If you did not make this request, you can ignore this email. Otherwise, you can reset your password by clicking the button below.
           </div>
           <div class="btn-container">
-            <a href="\${resetLink}" class="btn" target="_blank">Reset Password</a>
+            <a href="${resetLink}" class="btn" target="_blank">Reset Password</a>
           </div>
           <div class="text">
             If the button doesn't work, copy and paste the following link directly into your browser:
             <br>
-            <a href="\${resetLink}" style="color: #ef4444; word-break: break-all;">\${resetLink}</a>
+            <a href="${resetLink}" style="color: #ef4444; word-break: break-all;">${resetLink}</a>
           </div>
           <div class="warning">
             Note: This reset link is secure and will expire in 1 hour.
@@ -427,12 +427,12 @@ export const sendPasswordResetEmail = async (email, name, resetToken) => {
 
   try {
     const data = await resend.emails.send({
-      from: `SyncTube <\${senderEmail}>`,
+      from: `SyncTube <${senderEmail}>`,
       to: email,
       subject: 'Reset your SyncTube Password',
       html: htmlContent,
     });
-    console.log(`Password reset email sent successfully to \${email}. ID: \${data.id}`);
+    console.log(`Password reset email sent successfully to ${email}. ID: ${data.id}`);
     return { success: true, id: data.id };
   } catch (error) {
     console.error('Error sending password reset email via Resend:', error.message);
